@@ -1,8 +1,8 @@
 import express from 'express'
 import jwt from 'jsonwebtoken';
 import { getDB } from './util.js';
-
-const SECRET_KEY = "this is something that should not be known to anyone (ANYONE)"
+import { config } from 'dotenv';
+config();
 
 const app = express();
 // adding a global middleware
@@ -13,7 +13,7 @@ const authMiddleware = async (req, res, next) => {
     // means created by this server only
  
     try {
-        jwt.verify(req.headers.token,SECRET_KEY)
+        jwt.verify(req.headers.token,process.env.SECRET_KEY)
         next()
     } catch (error) {
         res.json({message:"un authorized"})
@@ -34,7 +34,7 @@ app.get("/generate-token",async (req,res)=>{
     let userEntry = await db.collection("users").find(query).toArray();
     if (userEntry && userEntry.length > 0) {
         // generate the token
-        let token = jwt.sign({username: req.headers.username},SECRET_KEY,{expiresIn:'10m'});
+        let token = jwt.sign({username: req.headers.username},process.env.SECRET_KEY,{expiresIn:'10m'});
         res.json({token:token})
 
     }else{
