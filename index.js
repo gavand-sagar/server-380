@@ -34,7 +34,7 @@ app.get("/generate-token",async (req,res)=>{
     let userEntry = await db.collection("users").find(query).toArray();
     if (userEntry && userEntry.length > 0) {
         // generate the token
-        let token = jwt.sign({username: req.headers.username},SECRET_KEY,{expiresIn:'30s'});
+        let token = jwt.sign({username: req.headers.username},SECRET_KEY,{expiresIn:'10m'});
         res.json({token:token})
 
     }else{
